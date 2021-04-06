@@ -8,10 +8,12 @@ const port = process.env.PORT || 3000
 app.use(express.static(path.resolve('public')))
 
 io.on('connection', (socket) => {
-  console.log('user connected');
-
   socket.on('message', (message) => {
     io.emit('message', message)
+  })
+
+  socket.on('typing', (nickname) => {
+    io.emit('isTyping', nickname)
   })
 
   socket.on('disconnect', () => {

@@ -13,11 +13,18 @@
 <body>
 	<main>
 		<div class="container">
-			<section>
+			<section id="nickname">
+				<h1>Enter your nickname</h1>
+				<form id="nickname-form">
+					<input type="text" name="nickname">
+					<button type="submit">Enter chat</button>
+				</form>
+			</section>
+			<section id="chat" class="hidden">
 				<ul>
 
 				</ul>
-
+				<p id="is-typing"></p>
 				<form id="chat-form">
 					<input type="text" name="message" id="message">
 					<button type="submit">Send</button>
