@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
     <title>Spacecoders team pagina</title>
+    <script defer src="./socket.io/socket.io.js"></script>
+    <script defer src="./js/index.js"></script>
 </head>
 
 <body>
@@ -22,72 +24,72 @@
                 <h2>Team R2D2-B: Spacecoders</h2>
                 <div class="members">
                     <section class="member">
-                        <img src="https://raw.githubusercontent.com/StanBankras/kickoff-2021/main/img/mugshot.jpg"
-                            alt="">
+                        <img src="https://raw.githubusercontent.com/StanBankras/kickoff-2021/main/img/mugshot.jpg" alt="">
                         <h3>Stan Bankras</h3>
                         <p>/StanBankras</p>
-                        <a href="https://stanbankras.github.io/kickoff-2021/index.html" target="_blank"
-                            class="button">Naar
+                        <a href="https://stanbankras.github.io/kickoff-2021/index.html" target="_blank" class="button">Naar
                             visitekaartje</a>
                     </section>
                     <section class="member">
-                        <img src="https://avatars.githubusercontent.com/u/60625329?s=460&u=663bdaef456e0cb90e4435c57a250889a008d691&v=4"
-                            alt="">
+                        <img src="https://avatars.githubusercontent.com/u/60625329?s=460&u=663bdaef456e0cb90e4435c57a250889a008d691&v=4" alt="">
                         <h3>Sam Slotemaker</h3>
                         <p>/SamSlotemaker</p>
                         <a href="https://samslotemaker.github.io/kickoff-2021/" target="_blank" class="button">Naar
                             visitekaartje</a>
                     </section>
                     <section class="member">
-                        <img src="https://avatars.githubusercontent.com/u/33514521?s=460&u=5405a81283bea0df7383ef96117e1f7c48c73429&v=4"
-                            alt="">
+                        <img src="https://avatars.githubusercontent.com/u/33514521?s=460&u=5405a81283bea0df7383ef96117e1f7c48c73429&v=4" alt="">
                         <h3>Rowin Ruizendaal</h3>
                         <p>/rowinruizendaal</p>
-                        <a href="https://rowinruizendaal.github.io/kickoff-2021/index.html" target="_blank"
-                            class="button">Naar
+                        <a href="https://rowinruizendaal.github.io/kickoff-2021/index.html" target="_blank" class="button">Naar
                             visitekaartje</a>
                     </section>
                     <section class="member">
-                        <img src="https://avatars.githubusercontent.com/u/23523798?s=460&u=f14617cb34dbc9fb6ce94f92bd6a036277553c94&v=4"
-                            alt="">
+                        <img src="https://avatars.githubusercontent.com/u/23523798?s=460&u=f14617cb34dbc9fb6ce94f92bd6a036277553c94&v=4" alt="">
                         <h3>Sergio Eijben</h3>
                         <p>/HappyPantss</p>
                         <a href="https://happypantss.github.io/kickoff-2021/" target="_blank" class="button">Naar
                             visitekaartje</a>
                     </section>
                     <section class="member">
-                        <img src="https://avatars.githubusercontent.com/u/13199349?s=460&u=0c014f403524b32404a81ca04b6b8a1ad2b841e9&v=4"
-                            alt="">
+                        <img src="https://avatars.githubusercontent.com/u/13199349?s=460&u=0c014f403524b32404a81ca04b6b8a1ad2b841e9&v=4" alt="">
                         <h3>Nathan Bommezijn</h3>
                         <p>/dewarian</p>
                         <a href="https://dewarian.github.io/kickoff-2021/" target="_blank" class="button">Naar
                             visitekaartje</a>
                     </section>
                     <section class="member">
-                        <img src="https://avatars.githubusercontent.com/u/64601659?s=400&u=f879dd5bd17530bbe144280edc625a8a2b59a660&v=4"
-                            alt="Github Profile Picture">
+                        <img src="https://avatars.githubusercontent.com/u/64601659?s=400&u=f879dd5bd17530bbe144280edc625a8a2b59a660&v=4" alt="Github Profile Picture">
                         <h3>Inju Michorius</h3>
                         <p>/InjuMichorius</p>
                         <a href="https://injumichorius.github.io/kickoff-2021/" target="_blank" class="button">Naar
                             visitekaartje</a>
                     </section>
                     <section class="member">
-                        <img src="https://avatars.githubusercontent.com/u/40112409?s=460&u=49d2fb2d31a15fd59369e0c4a4736bf47ad60b40&v=4"
-                            alt="">
+                        <img src="https://avatars.githubusercontent.com/u/40112409?s=460&u=49d2fb2d31a15fd59369e0c4a4736bf47ad60b40&v=4" alt="">
                         <h3>Oussama Fahchouch</h3>
                         <p>/ofahchouch-gh</p>
                         <a href="https://ofahchouch-gh.github.io/kickoff-2021/" target="_blank" class="button">Naar
                             visitekaartje</a>
                     </section>
                     <section class="member">
-                        <img src="https://avatars.githubusercontent.com/u/35685184?s=460&u=58d261e637236d370d935a82825051f2e2e73f8d&v=4"
-                            alt="">
+                        <img src="https://avatars.githubusercontent.com/u/35685184?s=460&u=58d261e637236d370d935a82825051f2e2e73f8d&v=4" alt="">
                         <h3>Johan van Beusekom</h3>
                         <p>/johancvb</p>
                         <a href="https://johancvb.github.io/kickoff-2021/index.html" target="_blank" class="button">Naar
                             visitekaartje</a>
                     </section>
                 </div>
+            </article>
+            <article>
+                <ul>
+
+                </ul>
+
+                <form id="chat-form">
+                    <input type="text" name="message" id="message">
+                    <button type="submit">Send</button>
+                </form>
             </article>
         </div>
     </main>
