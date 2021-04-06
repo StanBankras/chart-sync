@@ -9,16 +9,18 @@ const chatForm = document.getElementById('chat-form');
 const isTypingElement = document.getElementById('is-typing');
 const chatInput = document.querySelector('#chat-form input');
 
-const messages = document.querySelector('#chat ul');
+const messages = document.querySelector('.chat ul');
+const onlineCount = document.getElementById('online');
+const nicknames = document.getElementById('nicknames');
 
-let nickname = '';
+let userNickname = '';
 let typingUsers = [];
 
 chatForm.addEventListener('submit', e => {
 	e.preventDefault();
 
 	if (chatInput.value) {
-		socket.emit('message', { nickname, message: chatInput.value });
+		socket.emit('message', { nickname: userNickname, message: chatInput.value });
 		chatInput.value = '';
 		chatInput.focus();
 	}
@@ -29,15 +31,16 @@ nicknameForm.addEventListener('submit', e => {
 
 	const name = nicknameInput.value;
 	if (name) {
-		nickname = name;
+		userNickname = name;
 		nicknameSection.classList.add('hidden');
 		chatSection.classList.remove('hidden');
+		socket.emit('nickname', userNickname);
 	}
 });
 
 chatInput.addEventListener('input', e => {
 	if(e.target.value && e.target.value !== '') {
-		socket.emit('typing', nickname);
+		socket.emit('typing', userNickname);
 	}
 });
 
@@ -50,6 +53,7 @@ socket.on('message', ({ nickname, message }) => {
 	msg.textContent = message;
 	element.appendChild(name);
 	element.appendChild(msg);
+	if(nickname === userNickname) element.classList.add('own');
 	messages.appendChild(element);
 	messages.scrollTop = messages.scrollHeight;
 });
@@ -65,20 +69,35 @@ socket.on('isTyping', nickname => {
 	setTypingUsers();
 });
 
+socket.on('nicknames', names => {
+	onlineCount.textContent = `Online users (${names.length}):`;
+	setNicknames(names);
+});
+
 function setTypingUsers() {
-	if(typingUsers.length > 0) {
-		if(typingUsers.length === 1) {
-			isTypingElement.textContent = `${typingUsers[0].nickname} is typing...`;
+	const users = typingUsers.filter(u => u.nickname !== userNickname);
+	if(users.length > 0) {
+		if(users.length === 1) {
+			isTypingElement.textContent = `${users[0].nickname} is typing...`;
 		} else {
-			isTypingElement.textContent = `${typingUsers.map(u => u.nickname).slice(0, typingUsers.length - 1).join(', ')} and ${typingUsers[typingUsers.length - 1].nickname} are typing...`;
+			isTypingElement.textContent = `${users.map(u => u.nickname).slice(0, users.length - 1).join(', ')} and ${users[users.length - 1].nickname} are typing...`;
 		}
 	} else {
 		isTypingElement.textContent = '';
 	}
 }
 
+function setNicknames(names) {
+	nicknames.innerHTML = '';
+	names.forEach(name => {
+		const el = document.createElement('li');
+		el.textContent = name;
+		nicknames.appendChild(el);
+	})
+}
+
 setInterval(() => {
   const time = Date.now();
-  typingUsers = typingUsers.filter(user => time < user.date + 3000);
+  typingUsers = typingUsers.filter(user => time < user.date + 1500);
 	setTypingUsers();
-}, 1000);
+}, 100);

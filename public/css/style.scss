@@ -1,67 +1,102 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	margin: 0;
+	padding: 0;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  list-style: none;
 }
 
-header {
-  background-color: grey;
-  margin-bottom: 2rem;
-  padding: 3rem 0;
+.hidden {
+  display: none !important;
+}
+
+.container {
+  padding: 2rem;
+  max-width: 1400px;
+  min-height: 100vh;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
-  background-color: black;
-  color: white;
-  h1 {
-    margin-bottom: 0.5rem;
-  }
-  img {
-    max-width: 150px;
-  }
 }
 
-.container {
-  max-width: 1300px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-
-article {
-  h2 {
-    margin-bottom: 2rem;
-    text-align: center;
-  }
-}
-
-.members {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 2rem;
+h1 {
   margin-bottom: 2rem;
-  @media(max-width: 878px) {
-    grid-template-columns: 1fr 1fr;
+}
+
+input {
+  padding: 0.5rem;
+}
+
+#nickname-form {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  input {
+    margin-bottom: 1rem;
   }
-  @media(max-width: 450px) {
-    grid-template-columns: 1fr;
-  }
-  .member {
-    img {
-      max-height: 300px;
-      margin-bottom: 1rem;
-      max-width: 100%;
-    }
-    .button {
-      text-decoration: none;
-      padding: 0.5rem 1rem;
-      background-color: black;
-      color: white;
+}
+
+#chat {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  .online {
+    background-color: rgb(221, 221, 221);
+    padding: 1rem;
+    p {
       font-weight: bold;
-      display: inline-block;
-      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    ul {
+      li {
+        padding: 0.5rem;
+      }
+    }
+  }
+  .chat {
+    position: relative;
+    display: grid;
+    grid-template-rows: 500px 50px;
+    gap: 1rem;
+    .chatname {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 0.5rem;
+      background-color: rgb(236, 236, 236);
+    }
+    ul {
+      height: 100%;
+      max-height: 500px;
+      overflow-y: auto;
+      li {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
+        padding: 0.8rem 1rem;
+        border-radius: 15px;
+        background-color: rgb(238, 238, 238);
+        width: clamp(300px, 40%, 100%);
+        span:first-child {
+          font-weight: bold;
+          margin-bottom: 0.5rem;
+        }
+        &.own {
+          margin-left: auto;
+        }
+      }
+    }
+    form {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 100px;
+      gap: 0.5rem;
     }
   }
 }
