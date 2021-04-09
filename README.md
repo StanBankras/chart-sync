@@ -14,3 +14,15 @@ Setup a new room, or join an existing room
 Chart together, see collaborator's activity in real-time
 
 ![live collaboration](https://github.com/StanBankras/chart-sync/blob/main/img/sketch-2.jpg?raw=true)
+
+## Functionalities
+* [ ] Create room
+* [ ] Join existing room
+* [ ] Choose layout (single, dual & quad chart)
+* [ ] Choose currencies to chart
+* [ ] Draw on the charts
+* [ ] Host can lock someone's drawing ability
+* [ ] Charts update with live price data
+* [ ] Toggle seeing collaborators cursor
+* [ ] Export idea as image
+
