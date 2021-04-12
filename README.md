@@ -26,3 +26,7 @@ Chart together, see collaborator's activity in real-time
 * [ ] Toggle seeing collaborators cursor
 * [ ] Export idea as image
 
+## Data flow
+![data flow](https://github.com/StanBankras/chart-sync/blob/main/img/data-flow.png?raw=true)
+
+My idea is to connect the client with a websockets to the Binance API, to update the price charts, while connecting it to my Node server to sync actions with other collaborators.
