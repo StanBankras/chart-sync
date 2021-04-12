@@ -11,9 +11,21 @@ Setup a new room, or join an existing room
 ![start](https://github.com/StanBankras/chart-sync/blob/main/img/sketch-1.jpg?raw=true)
 
 ### Charting screen
-Chart together, see collaborator's activity in real-time
+Chart together, see collaborator's activity in real-time.
 
+Three different solutions for this screen:
+
+#### Sketch 1
 ![live collaboration](https://github.com/StanBankras/chart-sync/blob/main/img/sketch-2.jpg?raw=true)
+
+#### Sketch 2
+![live collaboration](https://github.com/StanBankras/chart-sync/blob/main/img/sketch-3.jpg?raw=true)
+
+#### Sketch 3
+![live collaboration](https://github.com/StanBankras/chart-sync/blob/main/img/sketch-4.jpg?raw=true)
+
+After looking at these three different approaches, I chose to continue with #2, because the charts are the most important and this way can use all the screen space.
+
 
 ## Functionalities
 * [ ] Create room
