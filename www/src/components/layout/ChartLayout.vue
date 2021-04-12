@@ -1,81 +1,46 @@
 <template>
-  <div>
-    <grid-layout
-      :layout.sync="gridItems"
-      :col-num="2"
-      :row-num="2"
-      :row-height="height"
-      :maxRows="2"
-      :is-draggable="false"
-      :is-resizable="true"
-      :is-mirrored="false"
-      :vertical-compact="true"
-      :responsive="true"
-      :use-css-transforms="true"
-      :margin="[0, 0]"
-    >
-      <grid-item
-        v-for="item in gridItems" :key="item.ticker"
-        :x="item.x"
-        :y="item.y"
-        :w="item.w"
-        :h="item.h"
-        :i="item.i"
-        @resized="resize"
-      >
-        <chart :resized="resized" :ticker="item.ticker || ''"/>
-      </grid-item>
-    </grid-layout>
+  <div class="chart-wrapper" :class="{ multiple: tickers.length > 1 }">
+    <chart
+      v-for="ticker in tickers"
+      :key="ticker"
+      :ticker="ticker"
+      :trade="lastRates[ticker.replace('/', '')]"/>
   </div>
 </template>
 
 <script>
-import VueGridLayout from "vue-grid-layout";
-
 import Chart from "@/components/chart/Chart";
 
 export default {
   props: ["tickers"],
   components: {
-    Chart,
-    GridLayout: VueGridLayout.GridLayout,
-    GridItem: VueGridLayout.GridItem,
+    Chart
   },
   data() {
     return {
-      height: 300,
-      gridItems: [],
-      resized: 0,
-      tradeStreams: undefined
+      tradeStreams: undefined,
+      lastRates: {}
     }
   },
   mounted() {
     const streams = this.tickers.reduce((acc, curr) => acc + '/' + curr.toLowerCase().replace('/', '') + '@aggTrade', '');
     this.tradeStreams = new WebSocket(`wss://stream.binance.com:9443/stream?streams=${streams.substring(1)}`);
-    this.tradeStreams.onmessage = trade => console.log(JSON.parse(trade.data).data);
+    this.tradeStreams.onmessage = trade => {
+      const data = JSON.parse(trade.data).data;
+      const updateTrade = {
+        rate: Number(data.p),
+        volume: Number(data.q) 
+      }
 
-    this.setTickerGrid();
+      const inObj = !!this.lastRates[data.s];
+      this.lastRates[data.s] = updateTrade;
 
-    setTimeout(() => {
-      const height = document.querySelector('body').getBoundingClientRect().height;
-      this.height = height / 2;
-    }, 50);
+      if(!inObj) this.lastRates = JSON.parse(JSON.stringify(this.lastRates));
+    }
   },
   methods: {
     resize() {
       this.resized += 1
-    },
-    setTickerGrid() {
-      this.gridItems = this.tickers.map((t, i) => {
-        return {
-          ticker: t,
-          x: i % 2 === 0 ? 0 : 6,
-          y: i === 0 ? 0 : i === 1 ? 0 : 1,
-          w: 6,
-          h: 1,
-          i          
-        }
-      });
     }
   }
 };
@@ -85,6 +50,9 @@ export default {
 .chart-wrapper {
   display: grid;
   grid-template-columns: 1fr;
+  height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 .multiple {

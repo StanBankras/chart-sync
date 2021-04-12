@@ -1,50 +1,57 @@
 <template>
-  <div :class="ticker.toLowerCase().replace('/', '')">
+  <div style="width: 100%; height: 100%" :ref="ticker">
     <trading-vue
-      :data="this.$data"
+      ref="chart"
+      :timezone="new Date().getTimezoneOffset() / 60 * -1"
+      :title-txt="ticker"
+      :data="chart"
       :height="height"
       :width="width"
+      :timeframe="timeframe"
+      :toolbar="true"
     />
   </div>
 </template>
 
 <script>
-import TradingVue from "trading-vue-js";
+import { TradingVue, DataCube } from 'trading-vue-js';
 
 export default {
-  props: ['ticker', 'resized'],
+  props: ['ticker', 'trade'],
   components: { TradingVue },
   data() {
     return {
-      ohlcv: [
-        [1551128400000, 33, 37.1, 14, 14, 196],
-        [1551132000000, 13.7, 30, 6.6, 30, 206],
-        [1551135600000, 29.9, 33, 21.3, 21.8, 74],
-        [1551139200000, 21.7, 25.9, 18, 24, 140],
-        [1551142800000, 24.1, 24.1, 24, 24.1, 29],
-      ],
+      chart: new DataCube(),
       height: 200,
-      width: 200
+      width: 200,
+      timeframe: '1m',
+      container: undefined
     };
   },
   mounted() {
-    const container = document.querySelector(`.${this.ticker.toLowerCase().replace('/', '')}`);
-    setTimeout(() => this.onResize(container), 100);
-    window.addEventListener('resize', this.onResize(container));
+    fetch(`http://localhost:3000/klines/${this.ticker.replace('/', '')}/${this.timeframe}`)
+      .then(response => response.json())
+      .then(candles => this.chart.set('chart.data', candles.map(candle => candle.slice(0, 5).map(c => Number(c)))));
+
+    this.container = this.$refs[this.ticker];
+    const box = this.container.getBoundingClientRect();
+    this.height = box.height;
+    this.width = box.width;
+    window.addEventListener('resize', this.onResize);
   },
   methods: {
     onResize() {
-      this.$nextTick(() => {
-        const container = document.querySelector(`.${this.ticker.toLowerCase().replace('/', '')}`);
-        const box = container.getBoundingClientRect();
-        this.height = box.height;
-        this.width = box.width;
-      });
+      const box = this.container.getBoundingClientRect();
+      this.height = box.height;
+      this.width = box.width;
     }
   },
   watch: {
-    resized() {
-      this.onResize();
+    trade(val) {
+      this.chart.update({
+        price: val.rate,
+        volume: val.volume
+      });  
     }
   }
 };
