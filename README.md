@@ -55,7 +55,7 @@ Some pointers about the websocket streams (from the docs):
 For keeping my charts real-time, I'm going to be listening to the trade streams of the coins that are being watched by the user. For this reason, I will use the [Websocket Market Streams](https://binance-docs.github.io/apidocs/spot/en/#websocket-market-streams). These allow me to subscribe to specific tickers and get the live trades.
 
 A trade is received like this:
-```json
+```
 {
   "e": "aggTrade",  // Event type
   "E": 123456789,   // Event time
@@ -86,7 +86,7 @@ Out of this, I need:
 Mainly what I will need for my charts from the Binance API is the `Kline/Candlestick Data`: `GET /api/v3/klines`. This will allow me to collect the data that needs to be loaded to show on the price chart.
 Klines come back in an array that looks like:
 
-```json
+```
 [
   [
     1499040000000,      // Open time
@@ -118,7 +118,7 @@ Users need to be able to select a coin pair on Binance to start charting. Theref
 To do so, I can use `GET /api/v3/exchangeInfo`.
 
 The response will be:
-```json
+```
 {
   "timezone": "UTC",
   "serverTime": 1565246363776,
