@@ -16,6 +16,7 @@ const port = process.env.PORT || 3000;
 function build() {
   exec(`yarn install | yarn run build`, { cwd: path.join(__dirname, '..', 'www') }, (err, stdout, stderr) => {
     if(err) {
+      console.error(err);
       console.log('Build Vue app failed');
     } else {
       console.log('Build succeeded!');
