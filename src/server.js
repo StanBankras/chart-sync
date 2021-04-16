@@ -10,7 +10,20 @@ const io = require('socket.io')(http, {
 });
 const fetch = require('node-fetch');
 const cors = require('cors');
+const { exec } = require('child_process');
 const port = process.env.PORT || 3000;
+
+function build() {
+  exec(`yarn install | yarn run build`, { cwd: path.join(__dirname, '..', 'www') }, (err, stdout, stderr) => {
+    if(err) {
+      console.log('Build Vue app failed');
+    } else {
+      console.log('Build succeeded!');
+    }
+  });
+}
+
+build();
 
 app.use(cors());
 
