@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <collaborator-list/>
-    <chart-layout :tickers="['ETH/USDT', 'BNB/USDT', 'MTL/USDT', 'MITH/USDT']"/>
+    <chart-layout/>
   </div>
 </template>
 
@@ -17,6 +17,6 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 1fr;
 }
 </style>

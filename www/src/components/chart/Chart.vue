@@ -7,8 +7,12 @@
       :data="chart"
       :height="height"
       :width="width"
-      :timeframe="timeframe"
+      :tf="timeframe"
       :toolbar="true"
+      v-on:tool-selected="change"
+      v-on:register-tools="change"
+      v-on:remove-tool="change"
+      v-on:change-settings="change"
     />
   </div>
 </template>
@@ -25,25 +29,101 @@ export default {
       height: 200,
       width: 200,
       timeframe: '1m',
-      container: undefined
+      container: undefined,
+      prevOnchart: undefined
     };
+  },
+  sockets: {
+    add_item(payload) {
+      if(payload.ticker === this.ticker) {
+        const item = this.chart.get_one(payload.data.id);
+        if(item) return;
+        this.chart.data.onchart.push(payload.data);
+      }
+    },
+    move_item(payload) {
+      if(payload.ticker === this.ticker) {
+        console.log(this.chart.data);
+        const item = this.chart.get_one(payload.data.id);
+        if(item && !item.settings.$selected) {
+          this.chart.set(payload.data.id, payload.data);
+        }
+      }
+    },
+    del_item(payload) {
+      if(payload.ticker === this.ticker) {
+        const item = this.chart.get_one(payload.data.id);
+        if(item) {
+          this.chart.del(payload.data.id);
+        }
+      }
+    }
   },
   mounted() {
     fetch(`http://localhost:3000/klines/${this.ticker.replace('/', '')}/${this.timeframe}`)
       .then(response => response.json())
       .then(candles => this.chart.set('chart.data', candles.map(candle => candle.slice(0, 5).map(c => Number(c)))));
 
-    this.container = this.$refs[this.ticker];
-    const box = this.container.getBoundingClientRect();
-    this.height = box.height;
-    this.width = box.width;
+    this.container = this.$refs[this.ticker].getBoundingClientRect();
+    this.height = this.container.height;
+    this.width = this.container.width;
+    
     window.addEventListener('resize', this.onResize);
   },
   methods: {
     onResize() {
-      const box = this.container.getBoundingClientRect();
-      this.height = box.height;
-      this.width = box.width;
+      this.height = this.container.height;
+      this.width = this.container.width;
+    },
+    change(e) {
+      const prev = this.prevOnchart ? JSON.parse(JSON.stringify(this.prevOnchart)) : undefined;
+      const onchart = JSON.parse(JSON.stringify(this.chart.data.onchart));
+
+      if(onchart.length <= 0) return;
+
+      if(!prev || prev.length === 0) {
+        const data = onchart[0];
+        data.settings.p1 = e.p1;
+        data.settings.p2 = e.p1;
+        data.settings.$state = 'finished';
+        data.settings.$selected = false;
+        this.emitDrawChange({
+          type: 'add_item',
+          data,
+          ticker: this.ticker
+        });
+      } else if(prev.length < onchart.length) {
+        const data = onchart[onchart.length - 1];
+        data.settings.$state = 'finished';
+        data.settings.$selected = false;
+        this.emitDrawChange({
+          type: 'add_item',
+          data,
+          ticker: this.ticker
+        });
+      } else if(JSON.stringify(prev) !== JSON.stringify(onchart)) {
+        const changed = prev.find((item, i) => JSON.stringify(onchart[i]) !== JSON.stringify(item));
+        changed.settings.$state = 'finished';
+        changed.settings.$selected = false;
+        this.emitDrawChange({
+          type: 'move_item',
+          data: changed,
+          ticker: this.ticker
+        });
+      } else {
+        const deleted = prev.filter(item => !onchart.find(o => o.id === item.id))[0];
+        if(deleted) {
+          this.emitDrawChange({
+            type: 'del_item',
+            data: deleted,
+            ticker: this.ticker
+          });
+        }
+      }
+      this.prevOnchart = onchart;
+    },
+    emitDrawChange(change) {
+      this.$socket.emit(change.type, { ticker: change.ticker, data: change.data });
     }
   },
   watch: {

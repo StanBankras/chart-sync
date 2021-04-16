@@ -12,9 +12,13 @@
 import Chart from "@/components/chart/Chart";
 
 export default {
-  props: ["tickers"],
   components: {
     Chart
+  },
+  computed: {
+    tickers() {
+      return this.$store.getters.tickers;
+    }
   },
   data() {
     return {

@@ -9,5 +9,6 @@
   padding: 1.5rem;
   background-color: black;
   color: white;
+  display: none;
 }
 </style>
