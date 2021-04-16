@@ -50,7 +50,7 @@ export default {
     }
   },
   mounted() {
-    fetch(`http://localhost:3000/klines/${this.ticker.replace('/', '')}/${this.timeframe}`)
+    fetch(`${process.env.VUE_APP_API_HOSTNAME}/klines/${this.ticker.replace('/', '')}/${this.timeframe}`)
       .then(response => response.json())
       .then(candles => this.chart.set('chart.data', candles.map(candle => candle.slice(0, 5).map(c => Number(c)))));
 
@@ -101,15 +101,6 @@ export default {
           data: changed,
           ticker: this.ticker
         });
-      } else {
-        const deleted = prev.filter(item => !onchart.find(o => o.id === item.id))[0];
-        if(deleted) {
-          this.emitDrawChange({
-            type: 'del_item',
-            data: deleted,
-            ticker: this.ticker
-          });
-        }
       }
       this.prevOnchart = onchart;
     },
@@ -130,7 +121,25 @@ export default {
         price: val.rate,
         volume: val.volume
       });  
-    }
+    },
+    'chart.data.onchart'(val) {
+      if(!val || !this.prevOnchart) return;
+      if(val.length < this.prevOnchart.length) {
+        const onchart = JSON.parse(JSON.stringify(this.chart.data.onchart));
+        const deleted = this.prevOnchart.filter(overlay => {
+          return !val.find(v => v.id === overlay.id)
+        });
+
+        if(!deleted || !deleted[0]) return;
+
+        this.emitDrawChange({
+          type: 'del_item',
+          data: deleted[0],
+          ticker: this.ticker
+        });
+        this.prevOnchart = onchart;
+      }
+    } 
   }
 };
 </script>

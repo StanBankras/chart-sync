@@ -5,7 +5,16 @@
   "repository": "https://github.com/StanBankras/real-time-web-2021.git",
   "author": "Stan Bankras <stanbankras@gmail.com>",
   "scripts": {
-    
+    "prestart": "cd ./www && vue-cli-service build",
+    "start": "node src/server.js"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "vue-cli-plugin-store": "^0.0.7",
+    "vue-template-compiler": "^2.6.12"
+  }
 }
