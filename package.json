@@ -5,8 +5,7 @@
   "repository": "https://github.com/StanBankras/real-time-web-2021.git",
   "author": "Stan Bankras <stanbankras@gmail.com>",
   "scripts": {
-    "start": "cd ./src && yarn install && node server.js",
-    "poststart": "cd ./www && yarn install && yarn run build"
+    "start": "cd ./www && yarn install && yarn run build && cd ../src && yarn install && node server.js"
   },
   "license": "MIT"
 }
