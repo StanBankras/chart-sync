@@ -5,7 +5,7 @@
   "repository": "https://github.com/StanBankras/real-time-web-2021.git",
   "author": "Stan Bankras <stanbankras@gmail.com>",
   "scripts": {
-    "prestart": "cd ./www && vue-cli-service build",
+    "prestart": "cd ./www && yarn install && yarn run build && cd ../src && yarn install",
     "start": "node src/server.js"
   },
   "license": "MIT",
