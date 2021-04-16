@@ -19,6 +19,7 @@
 
 <script>
 import { TradingVue, DataCube } from 'trading-vue-js';
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
   props: ['ticker', 'trade'],
@@ -30,33 +31,22 @@ export default {
       width: 200,
       timeframe: '1m',
       container: undefined,
-      prevOnchart: undefined
+      prevOnchart: undefined,
+      clientId: undefined
     };
   },
   sockets: {
     add_item(payload) {
-      if(payload.ticker === this.ticker) {
-        const item = this.chart.get_one(payload.data.id);
-        if(item) return;
-        this.chart.data.onchart.push(payload.data);
-      }
+      if(!this.isNewEvent(payload, true)) return;
+      this.chart.data.onchart.push(payload.data);
     },
     move_item(payload) {
-      if(payload.ticker === this.ticker) {
-        console.log(this.chart.data);
-        const item = this.chart.get_one(payload.data.id);
-        if(item && !item.settings.$selected) {
-          this.chart.set(payload.data.id, payload.data);
-        }
-      }
+      if(!this.isNewEvent(payload, false)) return;
+      this.chart.set(payload.data.id, payload.data);
     },
     del_item(payload) {
-      if(payload.ticker === this.ticker) {
-        const item = this.chart.get_one(payload.data.id);
-        if(item) {
-          this.chart.del(payload.data.id);
-        }
-      }
+      if(!this.isNewEvent(payload, false)) return;
+      this.chart.del(payload.data.id);
     }
   },
   mounted() {
@@ -64,10 +54,11 @@ export default {
       .then(response => response.json())
       .then(candles => this.chart.set('chart.data', candles.map(candle => candle.slice(0, 5).map(c => Number(c)))));
 
+    this.clientId = uuidv4();
     this.container = this.$refs[this.ticker].getBoundingClientRect();
     this.height = this.container.height;
     this.width = this.container.width;
-    
+
     window.addEventListener('resize', this.onResize);
   },
   methods: {
@@ -123,7 +114,14 @@ export default {
       this.prevOnchart = onchart;
     },
     emitDrawChange(change) {
-      this.$socket.emit(change.type, { ticker: change.ticker, data: change.data });
+      this.$socket.emit(change.type, { ticker: change.ticker, data: change.data, clientId: this.clientId });
+    },
+    isNewEvent(payload, bool) {
+      if(payload.clientId === this.clientId) return false;
+      if(payload.ticker !== this.ticker) return false;
+      const item = this.chart.get_one(payload.data.id);
+      if(bool ? item : !item) return false;
+      return true;
     }
   },
   watch: {

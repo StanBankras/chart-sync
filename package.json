@@ -1,0 +1,11 @@
+{
+  "name": "real-time-web-2021",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/StanBankras/real-time-web-2021.git",
+  "author": "Stan Bankras <stanbankras@gmail.com>",
+  "scripts": {
+    
+  },
+  "license": "MIT"
+}
