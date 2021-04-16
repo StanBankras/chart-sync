@@ -38,4 +38,8 @@ app.get('/klines/:pair/:timeframe', (req, res) => {
     .then(data => res.send(data));
 });
 
+app.get('/', (req, res) => {
+  res.sendFile('index.html');
+});
+
 http.listen(port, () => console.log(`listening on ${port}`));
