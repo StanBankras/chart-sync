@@ -39,10 +39,12 @@ export default {
     add_item(payload) {
       if(!this.isNewEvent(payload, true)) return;
       this.chart.data.onchart.push(payload.data);
+      this.reinitPins();
     },
     move_item(payload) {
       if(!this.isNewEvent(payload, false)) return;
       this.chart.set(payload.data.id, payload.data);
+      this.reinitPins();
     },
     del_item(payload) {
       if(!this.isNewEvent(payload, false)) return;
@@ -65,6 +67,15 @@ export default {
     onResize() {
       this.height = this.container.height;
       this.width = this.container.width;
+    },
+    reinitPins() {
+      let ovs = this.chart.tv.$refs.chart.$refs.sec[0]
+        .$refs.grid
+        .$children.filter(x => x.tool)
+
+      for (const ov of ovs) {
+        ov.pins.forEach(x => x.re_init())
+      }
     },
     change(e) {
       const prev = this.prevOnchart ? JSON.parse(JSON.stringify(this.prevOnchart)) : undefined;
