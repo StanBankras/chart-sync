@@ -10,21 +10,7 @@ const io = require('socket.io')(http, {
 });
 const fetch = require('node-fetch');
 const cors = require('cors');
-const { exec } = require('child_process');
 const port = process.env.PORT || 3000;
-
-// function build() {
-//   exec(`yarn install | yarn run build`, { cwd: path.join(__dirname, '..', 'www') }, (err, stdout, stderr) => {
-//     if(err) {
-//       console.error(err);
-//       console.log('Build Vue app failed');
-//     } else {
-//       console.log('Build succeeded!');
-//     }
-//   });
-// }
-
-// build();
 
 app.use(cors());
 
@@ -43,6 +29,10 @@ io.on('connection', socket => {
 
   socket.on('del_item', data => {
     io.emit('del_item', data);
+  });
+
+  socket.on('change_ticker', data => {
+    io.emit('change_ticker', data);
   });
 });
 

@@ -3,7 +3,7 @@
     <chart
       v-for="ticker in tickers"
       :key="ticker"
-      :ticker="ticker"/>
+      :initialticker="ticker"/>
   </div>
 </template>
 
@@ -17,19 +17,6 @@ export default {
   computed: {
     tickers() {
       return this.$store.getters.tickers;
-    }
-  },
-  data() {
-    return {
-      tradeStreams: undefined
-    }
-  },
-  mounted() {
-    this.$store.dispatch('initialWSSubscribe');
-  },
-  methods: {
-    resize() {
-      this.resized += 1
     }
   }
 };

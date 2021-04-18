@@ -1,19 +1,15 @@
 <template>
   <div class="wrapper">
-    <div @click.self="selectTf = false" class="topbar">
-      <input type="text" :placeholder="ticker" id="ticker" v-model="tickerInput">
-      <div class="timeframe">
-        <div @click="selectTf = !selectTf" class="selected">{{ timeframe }}</div>
-        <div :class="{ show: selectTf }" class="timeframes">
-          <div
-            v-for="tf in timeframes"
-            :key="tf"
-            @click="selectTimeframe(tf)">{{ tf }}</div>
-        </div>
-      </div>
-    </div>
+    <top-bar
+      :ticker="ticker"
+      :timeframe="timeframe"
+      :selectTf="selectTf"
+      v-on:select-new-tf="bool => bool ? selectTf = false : selectTf = !selectTf"
+      v-on:select-tf="tf => selectTimeframe(tf)"
+      v-on:select-ticker="ticker => selectTicker(ticker)"/>
     <div @click="selectTf = false" style="width: 100%; height: calc(100% - 50px)" :ref="chartId">
       <trading-vue
+        ref="chart"
         :timezone="new Date().getTimezoneOffset() / 60 * -1"
         :title-txt="ticker"
         :data="chart"
@@ -34,9 +30,11 @@
 import { TradingVue, DataCube } from 'trading-vue-js';
 import { v4 as uuidv4 } from 'uuid';
 
+import TopBar from './TopBar';
+
 export default {
-  props: ['ticker'],
-  components: { TradingVue },
+  props: ['initialticker'],
+  components: { TradingVue, TopBar },
   computed: {
     trades() {
       return this.$store.getters.trades;
@@ -47,18 +45,14 @@ export default {
       chart: new DataCube(),
       height: 200,
       width: 200,
-      timeframe: '1m',
+      timeframe: '1h',
       container: undefined,
       prevOnchart: undefined,
       clientId: undefined,
       chartId: uuidv4(),
-      timeframes: [
-        '1m', '3m', '5m', '15m', '30m',
-        '1h', '2h', '4h', '6h', '12h',
-        '1d', '3d', '1w', '1M'
-      ],
       selectTf: false,
-      tickerInput: undefined
+      tickerInput: undefined,
+      ticker: JSON.parse(JSON.stringify(this.initialticker))
     };
   },
   sockets: {
@@ -66,6 +60,11 @@ export default {
       if(!this.isNewEvent(payload, true)) return;
       this.chart.data.onchart.push(payload.data);
       this.reinitPins();
+    },
+    change_ticker(config) {
+      if(config.old !== this.ticker) return;
+      this.$store.dispatch('editTicker', config);
+      this.ticker = config.new;
     },
     move_item(payload) {
       if(!this.isNewEvent(payload, false)) return;
@@ -91,8 +90,23 @@ export default {
         .then(response => response.json())
         .then(candles => {
           this.chart.set('chart.data', candles.map(candle => candle.slice(0, 5).map(c => Number(c))));
+          this.chart.update({
+            price: Number(candles[candles.length - 1][4]),
+            volume: 0
+          });
           this.chart.tv.resetChart();
         });
+    },
+    selectTicker(ticker) {
+      const config =  { old: this.ticker, new: ticker };
+      this.$store.dispatch('editTicker', config);
+      this.$socket.emit('change_ticker', config);
+      this.ticker = ticker;
+    },
+    selectTimeframe(tf) {
+      this.timeframe = tf;
+      this.setCandles(this.ticker, tf);
+      this.selectTf = false;
     },
     onResize() {
       this.height = this.$refs[this.chartId].getBoundingClientRect().height;
@@ -154,11 +168,6 @@ export default {
       const item = this.chart.get_one(payload.data.id);
       if(bool ? item : !item) return false;
       return true;
-    },
-    selectTimeframe(tf) {
-      this.timeframe = tf;
-      this.setCandles(this.ticker, tf);
-      this.selectTf = false;
     }
   },
   watch: {
@@ -192,7 +201,10 @@ export default {
         });
         this.prevOnchart = onchart;
       }
-    } 
+    },
+    ticker(val) {
+      this.setCandles(val, this.timeframe);
+    }
   }
 };
 </script>
@@ -207,83 +219,5 @@ div {
   max-width: 100%;
   max-height: 100%;
   overflow: hidden;
-}
-
-.topbar {
-  color: white;
-  padding-left: 56px;
-  border-bottom: 1px solid #2a2e39;
-  display: flex;
-  > * {
-    border-right: 1px solid #2a2e39;
-    &:first-child {
-      border-left: 1px solid #2a2e39;
-    }
-  }
-  .timeframe {
-    position: relative;
-    width: 50px;
-    height: 50px;
-    .selected {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.5rem 1rem;
-      color: #787b86;
-      cursor: pointer;
-      transition: .3s;
-      &:hover {
-        background-color: #191e2c;
-      }
-    }
-    .timeframes {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      transform: translateY(100%);
-      z-index: 1000;
-      max-height: 0;
-      overflow: hidden;
-      &.show {
-        overflow: unset;
-        max-height: unset;
-      }
-      div {
-        height: 100%;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.5rem 1rem;
-        color: #787b86;
-        background-color: #131721;
-        cursor: pointer;
-        transition: .3s;
-        &:hover {
-          background-color: #191e2c;
-        }
-      }
-    }
-  }
-  #ticker {
-    height: 50px;
-    padding: 0.5rem 1rem;
-    background-color: #131721;
-    border: none;
-    color: #787b86;
-    border-right: 1px solid #2a2e39;
-    border-left: 1px solid #2a2e39;
-    font-weight: bold;
-    &::placeholder {
-      color: #787b86;
-      font-weight: bold;
-    }
-    &:focus {
-      outline: 1px solid #2a2e39;
-    }
-  }
 }
 </style>
