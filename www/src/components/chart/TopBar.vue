@@ -28,6 +28,9 @@ export default {
     allTickers() {
       return this.$store.getters.allTickers;
     },
+    tickers() {
+      return this.$store.getters.tickers;
+    },
     suggestions() {
       return this.allTickers
         .filter(ticker => {
@@ -36,6 +39,7 @@ export default {
             ticker.toLowerCase().replace('/', '').includes(this.tickerInput.toLowerCase())
           );
         })
+        .filter(ticker => !this.tickers.includes(ticker))
         .slice(0, 5);
     }
   },
