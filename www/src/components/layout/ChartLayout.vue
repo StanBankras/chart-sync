@@ -3,8 +3,7 @@
     <chart
       v-for="ticker in tickers"
       :key="ticker"
-      :ticker="ticker"
-      :trade="lastRates[ticker.replace('/', '')]"/>
+      :ticker="ticker"/>
   </div>
 </template>
 
@@ -22,25 +21,11 @@ export default {
   },
   data() {
     return {
-      tradeStreams: undefined,
-      lastRates: {}
+      tradeStreams: undefined
     }
   },
   mounted() {
-    const streams = this.tickers.reduce((acc, curr) => acc + '/' + curr.toLowerCase().replace('/', '') + '@aggTrade', '');
-    this.tradeStreams = new WebSocket(`wss://stream.binance.com:9443/stream?streams=${streams.substring(1)}`);
-    this.tradeStreams.onmessage = trade => {
-      const data = JSON.parse(trade.data).data;
-      const updateTrade = {
-        rate: Number(data.p),
-        volume: Number(data.q) 
-      }
-
-      const inObj = !!this.lastRates[data.s];
-      this.lastRates[data.s] = updateTrade;
-
-      if(!inObj) this.lastRates = JSON.parse(JSON.stringify(this.lastRates));
-    }
+    this.$store.dispatch('initialWSSubscribe');
   },
   methods: {
     resize() {
