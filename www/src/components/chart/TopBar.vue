@@ -31,7 +31,10 @@ export default {
     suggestions() {
       return this.allTickers
         .filter(ticker => {
-          return ticker.toLowerCase().includes(this.tickerInput.toLowerCase());
+          return (
+            ticker.toLowerCase().includes(this.tickerInput.toLowerCase()) ||
+            ticker.toLowerCase().replace('/', '').includes(this.tickerInput.toLowerCase())
+          );
         })
         .slice(0, 5);
     }

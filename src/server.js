@@ -16,23 +16,11 @@ app.use(cors());
 
 app.use(express.static(path.join('..', 'www', 'dist')))
 
+const events = ['add_item', 'move_item', 'del_item', 'change_ticker'];
+
 io.on('connection', socket => {
-  io.emit('test', 'test');
-
-  socket.on('add_item', data => {
-    io.emit('add_item', data);
-  });
-
-  socket.on('move_item', data => {
-    io.emit('move_item', data);
-  });
-
-  socket.on('del_item', data => {
-    io.emit('del_item', data);
-  });
-
-  socket.on('change_ticker', data => {
-    io.emit('change_ticker', data);
+  events.forEach(event => {
+    socket.on(event, data => io.emit(event, data));
   });
 });
 

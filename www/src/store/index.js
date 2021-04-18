@@ -36,10 +36,20 @@ const store = new Vuex.Store({
   },
   actions: {
     initialWSSubscribe({ commit, state }) {
-      const streams = state.tickers.reduce((acc, curr) => acc + '/' + curr.toLowerCase().replace('/', '') + '@aggTrade', '');
-      commit('SET_WEBSOCKET', new WebSocket(`wss://stream.binance.com:9443/stream?streams=${streams.substring(1)}`));
+      commit('SET_WEBSOCKET', new WebSocket('wss://stream.binance.com:9443/stream'));
+
+      const streams = state.tickers.map(ticker => ticker.toLowerCase().replace('/', '') + '@aggTrade');
+      state.binanceSocket.onopen = () => {
+        state.binanceSocket.send(JSON.stringify({
+          method: 'SUBSCRIBE',
+          params: streams,
+          id: 1 }
+        ));
+      }    
 
       state.binanceSocket.onmessage = trade => {
+        if(JSON.parse(trade.data).id) return;
+        
         const data = JSON.parse(trade.data).data;
         commit('SET_TRADE', { ticker: data.s, trade: {
           rate: Number(data.p),
@@ -58,6 +68,18 @@ const store = new Vuex.Store({
       const tickers = state.tickers;
       tickers[index] = payload.new;
       commit('EDIT_TICKERS', tickers);
+
+      state.binanceSocket.send(JSON.stringify({ 
+        method: 'UNSUBSCRIBE',
+        params: [payload.old.replace('/', '').toLowerCase() + '@aggTrade'],
+        id: 312 }
+      ));
+
+      state.binanceSocket.send(JSON.stringify({
+        method: 'SUBSCRIBE',
+        params: [payload.new.replace('/', '').toLowerCase() + '@aggTrade'],
+        id: 1 }
+      ));
     }
   }
 });
