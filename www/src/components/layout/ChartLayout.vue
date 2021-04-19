@@ -33,7 +33,7 @@ export default {
       return this.$store.getters.roomId;
     },
     roomName() {
-      return this.rooms[this.roomId];
+      return this.rooms[this.roomId].name;
     }
   },
   methods: {
@@ -49,7 +49,7 @@ export default {
 .chart-wrapper {
   display: grid;
   grid-template-columns: 1fr;
-  height: calc(100vh - 34px);
+  height: calc(100vh - 47px);
   max-width: 100vw;
   overflow-x: hidden;
 }
@@ -58,6 +58,9 @@ export default {
   padding: 0.5rem;
   background-color: #354364;
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .multiple {

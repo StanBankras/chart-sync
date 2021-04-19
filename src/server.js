@@ -52,7 +52,7 @@ io.on('connection', socket => {
     if(!room) return io.to(socket.id).emit('joined', { roomId: 'NO_ROOM_WITH_ID' });
 
     socket.join(roomId);
-    io.to(socket.id).emit('joined', { roomId, name: rooms[roomId].name });
+    io.to(socket.id).emit('joined', room);
   });
 
   socket.on('leave', roomId => socket.leave(roomId));
@@ -74,12 +74,19 @@ app.post('/room/new', async (req, res) => {
   if(rooms[room.id]) return res.sendStatus(409);
 
   const newRoom = {
+    roomId: room.id,
     name: room.name,
     chartCount,
-    tickers: []
+    tickers: {},
+    activeTickers: []
   };
 
-  console.log(room);
+  const standardTickers = ['ETH/USDT', 'BTC/USDT', 'LTC/USDT', 'LINK/USDT'];
+  for(let i = 0; i < chartCount; i++) {
+    const ticker = standardTickers[i];
+    newRoom.tickers[ticker] = [];
+    newRoom.activeTickers.push(ticker);
+  }
 
   await db.collection("rooms").doc(room.id).set(newRoom);
   newRoom.users = [];

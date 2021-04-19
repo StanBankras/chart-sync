@@ -11,7 +11,7 @@
       <template v-if="Object.keys(rooms).length > 0">
         <h2>Continue in a room</h2>
         <div class="rooms">
-          <div @click="joinRoom(key)" v-for="key in Object.keys(rooms)" :key="key">{{ rooms[key] }}</div>
+          <div @click="joinRoom(key)" v-for="key in Object.keys(rooms)" :key="key">{{ rooms[key].name }}</div>
         </div>
       </template>
     </div>
@@ -91,7 +91,8 @@ export default {
       const id = payload.roomId;
       if(id === 'NO_ID') return console.log('no id');
       if(id === 'NO_ROOM_WITH_ID') return console.log('no room with id');
-      this.$store.dispatch('setRoomId', { roomId: id, name: payload.name }).then(() => {
+      this.$store.dispatch('setRoomId', payload).then(() => {
+        if(this.$route.path === '/charts') return;
         this.$router.push('/charts');
       });
     } 
@@ -125,7 +126,7 @@ export default {
       })
       .then(response => {
         if(response.ok) {
-          this.$store.dispatch('setRoomId', { roomId, name: JSON.parse(body).room.name });
+          this.joinRoom(roomId);
         } else if(response.status === 409) {
           this.createRoom(chartCount);
         }

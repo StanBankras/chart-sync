@@ -41,15 +41,13 @@ const store = new Vuex.Store({
     },
     SET_ROOM_ID(state, payload) {
       if(!payload) return state.roomId = undefined;
-      if(state.rooms[payload.roomId]) return;
       state.roomId = payload;
     },
     SET_USERNAME(state, payload) {
       state.userName = payload;
     },
     SET_ROOMS(state, payload) {
-      console.log(payload);
-      payload.forEach(room => state.rooms[room.roomId] = room.name);
+      payload.forEach(room => state.rooms[room.roomId] = room);
     }
   },
   actions: {
@@ -111,6 +109,7 @@ const store = new Vuex.Store({
       }
     },
     setRoomId({ commit }, payload) {
+      commit('EDIT_TICKERS', payload.activeTickers);
       commit('SET_ROOM_ID', payload.roomId);
       commit('SET_ROOMS', [payload]);
 
