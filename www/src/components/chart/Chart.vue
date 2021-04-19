@@ -62,12 +62,13 @@ export default {
       selectTf: false,
       tickerInput: undefined,
       ticker: JSON.parse(JSON.stringify(this.initialticker)),
-      socketId: this.$socket.id
+      socketId: this.$socket.id,
+      movingItem: undefined,
+      checkMovingInterval: -1
     };
   },
   sockets: {
     add_item(payload) {
-        console.log(this.chart.data.onchart);
       if(!this.isNewEvent(payload, true)) return;
       this.chart.data.onchart.push(payload.data);
       this.reinitPins();
@@ -94,6 +95,10 @@ export default {
     this.height = this.container.height;
     this.width = this.container.width;
     window.addEventListener('resize', this.onResize);
+    this.checkMovingInterval = setInterval(() => this.checkMovingItem(), 3000);
+  },
+  beforeDestroy() {
+    clearInterval(this.checkMovingInterval);
   },
   methods: {
     setCandles(ticker, timeframe) {
@@ -119,6 +124,12 @@ export default {
         });
         this.reinitPins();
       }
+    },
+    checkMovingItem() {
+      if(!this.movingItem) return;
+      if(this.movingItem.date > Date.now()) return;
+      this.$socket.emit('moved_item', this.movingItem);
+      this.movingItem = undefined;
     },
     selectTicker(ticker) {
       const config =  { old: this.ticker, new: ticker, roomId: this.roomId };
@@ -174,6 +185,14 @@ export default {
         const changed = prev.find((item, i) => JSON.stringify(onchart[i]) !== JSON.stringify(item));
         changed.settings.$state = 'finished';
         changed.settings.$selected = false;
+
+        this.movingItem = {
+          date: Date.now() + 2000,
+          data: changed,
+          roomId: this.roomId,
+          ticker: this.ticker
+        };
+
         this.emitDrawChange({
           type: 'move_item',
           data: changed,

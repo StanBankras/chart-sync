@@ -36,23 +36,6 @@ let rooms = {};
 })();
 
 const events = ['add_item', 'move_item', 'del_item', 'change_ticker'];
-let movingDrawings = [];
-
-setInterval(() => {
-  movingDrawings = movingDrawings.filter(async drawing => {
-    if(drawing.date < Date.now()) {
-      const room = rooms[drawing.roomId];
-      if(!room) return true;
-  
-      const ticker = drawing.ticker;
-      const tool = drawing.data;
-  
-      const index = room.tickers[drawing.ticker].findIndex(t => t.id === tool.id);
-      room.tickers[drawing.ticker][index] = tool;
-      await db.collection("rooms").doc(drawing.roomId).update(room);
-    }
-  });
-}, 2000);
 
 io.on('connection', socket => {
   socket.on('change_ticker', async data => {
@@ -84,19 +67,18 @@ io.on('connection', socket => {
   
   socket.on('move_item', async data => {
     io.to(data.roomId).emit('move_item', data);
-    
-    const existing = movingDrawings.find(m => m.data.id === data.data.id);
-    if(existing) {
-      existing.date = Date.now() + 2000;
-      existing.data = data.data;
-    } else {
-      movingDrawings.push({
-        data: data.data,
-        ticker: data.ticker,
-        roomId: data.roomId,
-        date: Date.now() + 2000
-      });
-    }
+  });
+
+  socket.on('moved_item', async data => {
+    const room = rooms[data.roomId];
+    if(!room) return true;
+
+    const ticker = data.ticker;
+    const tool = data.data;
+
+    const index = room.tickers[data.ticker].findIndex(t => t.id === tool.id);
+    room.tickers[data.ticker][index] = tool;
+    await db.collection("rooms").doc(data.roomId).update(room);
   });
 
   socket.on('add_item', async data => {
