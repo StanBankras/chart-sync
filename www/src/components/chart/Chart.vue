@@ -39,8 +39,14 @@ export default {
     trades() {
       return this.$store.getters.trades;
     },
+    rooms() {
+      return this.$store.getters.rooms;
+    },
     roomId() {
       return this.$store.getters.roomId;
+    },
+    room() {
+      return this.rooms[this.roomId];
     }
   },
   data() {
@@ -61,6 +67,7 @@ export default {
   },
   sockets: {
     add_item(payload) {
+        console.log(this.chart.data.onchart);
       if(!this.isNewEvent(payload, true)) return;
       this.chart.data.onchart.push(payload.data);
       this.reinitPins();
@@ -99,7 +106,19 @@ export default {
             volume: 0
           });
           this.chart.tv.resetChart();
+          this.addDrawings();
         });
+    },
+    addDrawings() {
+      const drawings = this.room.tickers[this.ticker];
+      if(drawings && drawings.length > 0) {
+        drawings.forEach(drawing => {
+          if(!this.chart.data.onchart.find(tool => tool.settings['$uuid'] === drawing.settings['$uuid'])) {
+            this.chart.data.onchart.push(drawing);
+          }
+        });
+        this.reinitPins();
+      }
     },
     selectTicker(ticker) {
       const config =  { old: this.ticker, new: ticker, roomId: this.roomId };
