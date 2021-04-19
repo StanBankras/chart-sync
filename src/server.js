@@ -38,11 +38,47 @@ let rooms = {};
 const events = ['add_item', 'move_item', 'del_item', 'change_ticker'];
 
 io.on('connection', socket => {
-  // All chart draw events work the same
-  events.forEach(event => {
-    socket.on(event, data => {
-      io.to(data.roomId).emit(event, data);
-    });
+  socket.on('change_ticker', async data => {
+    io.to(data.roomId).emit('change_ticker', data);
+
+    const room = rooms[data.roomId];
+    if(!room) return;
+
+    const oldIndex = room.activeTickers.indexOf(data.old);
+    room.activeTickers[oldIndex] = data.new;
+
+    if(!room.tickers[data.new]) room.tickers[data.new] = [];
+    await db.collection("rooms").doc(data.roomId).update(room);
+  });
+
+  socket.on('del_item', async data => {
+    io.to(data.roomId).emit('del_item', data);
+
+    const room = rooms[data.roomId];
+    if(!room) return;
+
+    const ticker = data.ticker;
+    const tool = data.data;
+    
+    room.tickers[ticker] = room.tickers[ticker].filter(t => t.settings['$uuid'] !== tool.settings['$uuid']);
+    await db.collection("rooms").doc(data.roomId).update(room);
+  });
+
+  socket.on('move_item', async data => {
+    io.to(data.roomId).emit('move_item', data);
+  });
+
+  socket.on('add_item', async data => {
+    io.to(data.roomId).emit('add_item', data);
+
+    const room = rooms[data.roomId];
+    if(!room) return;
+
+    const ticker = data.ticker;
+    const tool = data.data;
+
+    room.tickers[ticker] = [...room.tickers[ticker], tool];
+    await db.collection("rooms").doc(data.roomId).update(room);
   });
 
   // Users joining a room: check if id exists
