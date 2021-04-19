@@ -1,9 +1,17 @@
 <template>
-  <div class="chart-wrapper" :class="{ multiple: tickers.length > 1 }">
-    <chart
-      v-for="ticker in tickers"
-      :key="ticker"
-      :initialticker="ticker"/>
+  <div class="wrapper">
+    <div class="room-info">
+      <p>{{ roomName }}</p>
+      <button @click="exitRoom" class="btn">
+        Exit room
+      </button>
+    </div>
+    <div class="chart-wrapper" :class="{ multiple: tickers.length > 1 }">
+      <chart
+        v-for="ticker in tickers"
+        :key="ticker"
+        :initialticker="ticker"/>
+    </div>
   </div>
 </template>
 
@@ -17,6 +25,21 @@ export default {
   computed: {
     tickers() {
       return this.$store.getters.tickers;
+    },
+    rooms() {
+      return this.$store.getters.rooms;
+    },
+    roomId() {
+      return this.$store.getters.roomId;
+    },
+    roomName() {
+      return this.rooms[this.roomId];
+    }
+  },
+  methods: {
+    exitRoom() {
+      this.$store.commit('SET_ROOM_ID', undefined);
+      this.$socket.emit('leave', this.roomId);
     }
   }
 };
@@ -26,9 +49,15 @@ export default {
 .chart-wrapper {
   display: grid;
   grid-template-columns: 1fr;
-  height: 100vh;
+  height: calc(100vh - 34px);
   max-width: 100vw;
   overflow-x: hidden;
+}
+
+.room-info {
+  padding: 0.5rem;
+  background-color: #354364;
+  color: white;
 }
 
 .multiple {

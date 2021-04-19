@@ -24,17 +24,17 @@ Three different solutions for this screen:
 #### Sketch 3
 ![live collaboration](https://github.com/StanBankras/chart-sync/blob/main/img/sketch-4.jpg?raw=true)
 
-After looking at these three different approaches, I chose to continue with #2, because the charts are the most important and this way can use all the screen space.
+After looking at these three different approaches, I chose to continue with #3, because the charts are the most important and this way can use all the screen space.
 
 
 ## Functionalities
 * [ ] Create room
 * [ ] Join existing room
 * [ ] Choose layout (single, dual & quad chart)
-* [ ] Choose currencies to chart
-* [ ] Draw on the charts
+* [x] Choose currencies to chart
+* [x] Draw on the charts
 * [ ] Host can lock someone's drawing ability
-* [ ] Charts update with live price data
+* [x] Charts update with live price data
 * [ ] Toggle seeing collaborators cursor
 * [ ] Export idea as image
 
@@ -135,3 +135,4 @@ The response will be:
 ```
 
 Out of this, I need to map the symbols array to get all pairs.
+

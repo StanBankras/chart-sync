@@ -38,6 +38,9 @@ export default {
   computed: {
     trades() {
       return this.$store.getters.trades;
+    },
+    roomId() {
+      return this.$store.getters.roomId;
     }
   },
   data() {
@@ -52,7 +55,8 @@ export default {
       chartId: uuidv4(),
       selectTf: false,
       tickerInput: undefined,
-      ticker: JSON.parse(JSON.stringify(this.initialticker))
+      ticker: JSON.parse(JSON.stringify(this.initialticker)),
+      socketId: this.$socket.id
     };
   },
   sockets: {
@@ -98,7 +102,7 @@ export default {
         });
     },
     selectTicker(ticker) {
-      const config =  { old: this.ticker, new: ticker };
+      const config =  { old: this.ticker, new: ticker, roomId: this.roomId };
       this.$store.dispatch('editTicker', config);
       this.$socket.emit('change_ticker', config);
       this.ticker = ticker;
@@ -160,7 +164,13 @@ export default {
       this.prevOnchart = onchart;
     },
     emitDrawChange(change) {
-      this.$socket.emit(change.type, { ticker: change.ticker, data: change.data, clientId: this.clientId });
+      this.$socket.emit(change.type, {
+        ticker: change.ticker,
+        data: change.data,
+        clientId: this.clientId,
+        socketId: this.socketId,
+        roomId: this.roomId
+      });
     },
     isNewEvent(payload, bool) {
       if(payload.clientId === this.clientId) return false;

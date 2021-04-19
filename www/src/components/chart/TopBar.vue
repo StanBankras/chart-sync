@@ -1,5 +1,5 @@
 <template>
-  <div @click.self="$emit('select-new-tf', false)" class="topbar">
+  <div @click.self="$emit('select-new-tf', true)" class="topbar">
     <div class="input">
       <input type="text" :placeholder="ticker" class="ticker" v-model="tickerInput">
       <div class="suggestions" v-if="tickerInput && tickerInput !== ''">
@@ -82,6 +82,7 @@ export default {
       color: #787b86;
       cursor: pointer;
       transition: .3s;
+      font-size: 12px;
       &:hover {
         background-color: #191e2c;
       }
@@ -110,6 +111,7 @@ export default {
         background-color: #131721;
         cursor: pointer;
         transition: .3s;
+        font-size: 12px;
         &:hover {
           background-color: #191e2c;
         }
@@ -135,6 +137,9 @@ export default {
   }
   .input {
     position: relative;
+    input {
+      margin-bottom :0;
+    }
     .suggestions {
       position: absolute;
       bottom: 0;

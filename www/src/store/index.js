@@ -9,12 +9,18 @@ const store = new Vuex.Store({
     tickers: ['ETH/USDT', 'NULS/USDT', 'GBP/USDT', 'BTC/USDT'],
     allTickers: [],
     binanceSocket: undefined,
-    trades: {}
+    trades: {},
+    rooms: {},
+    roomId: undefined,
+    userName: undefined
   },
   getters: {
     tickers: state => state.tickers,
     trades: state => state.trades,
-    allTickers: state => state.allTickers
+    allTickers: state => state.allTickers,
+    rooms: state => state.rooms,
+    roomId: state => state.roomId,
+    userName: state => state.userName
   },
   mutations: {
     SET_WEBSOCKET(state, payload) {
@@ -32,6 +38,18 @@ const store = new Vuex.Store({
     },
     EDIT_TICKERS(state, payload) {
       state.tickers = payload;
+    },
+    SET_ROOM_ID(state, payload) {
+      if(!payload) return state.roomId = undefined;
+      if(state.rooms[payload.roomId]) return;
+      state.roomId = payload;
+    },
+    SET_USERNAME(state, payload) {
+      state.userName = payload;
+    },
+    SET_ROOMS(state, payload) {
+      console.log(payload);
+      payload.forEach(room => state.rooms[room.roomId] = room.name);
     }
   },
   actions: {
@@ -80,6 +98,31 @@ const store = new Vuex.Store({
         params: [payload.new.replace('/', '').toLowerCase() + '@aggTrade'],
         id: 1 }
       ));
+    },
+    loadUserName({ commit }) {
+      const userName = localStorage.getItem('userName');
+      if(userName) commit('SET_USERNAME', userName);
+    },
+    loadRooms({ commit }) {
+      let rooms = localStorage.getItem('rooms');
+      if(rooms) {
+        rooms = JSON.parse(rooms);
+        commit('SET_ROOMS', rooms);
+      }
+    },
+    setRoomId({ commit }, payload) {
+      commit('SET_ROOM_ID', payload.roomId);
+      commit('SET_ROOMS', [payload]);
+
+      let rooms = localStorage.getItem('rooms');
+      if(rooms) {
+        rooms = JSON.parse(rooms);
+        if(rooms[payload.roomId]) return;
+        rooms.push(payload);
+        localStorage.setItem('rooms', JSON.stringify(rooms));
+      } else {
+        localStorage.setItem('rooms', JSON.stringify([payload]));
+      }
     }
   }
 });
