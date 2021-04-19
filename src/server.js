@@ -71,12 +71,13 @@ io.on('connection', socket => {
 
   socket.on('moved_item', async data => {
     const room = rooms[data.roomId];
-    if(!room) return true;
+    if(!room) return;
 
     const ticker = data.ticker;
     const tool = data.data;
 
     const index = room.tickers[data.ticker].findIndex(t => t.id === tool.id);
+    if(!index) return;
     room.tickers[data.ticker][index] = tool;
     await db.collection("rooms").doc(data.roomId).update(room);
   });

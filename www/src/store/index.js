@@ -48,6 +48,7 @@ const store = new Vuex.Store({
     },
     SET_ROOMS(state, payload) {
       payload.forEach(room => state.rooms[room.roomId] = room);
+      console.log(state.rooms);
     }
   },
   actions: {
@@ -110,17 +111,17 @@ const store = new Vuex.Store({
     },
     setRoomId({ commit }, payload) {
       commit('EDIT_TICKERS', payload.activeTickers);
-      commit('SET_ROOM_ID', payload.roomId);
       commit('SET_ROOMS', [payload]);
+      commit('SET_ROOM_ID', payload.roomId);
 
       let rooms = localStorage.getItem('rooms');
       if(rooms) {
         rooms = JSON.parse(rooms);
         if(rooms[payload.roomId]) return;
-        rooms.push(payload);
+        rooms.push({ roomId: payload.roomId, name: payload.name });
         localStorage.setItem('rooms', JSON.stringify(rooms));
       } else {
-        localStorage.setItem('rooms', JSON.stringify([payload]));
+        localStorage.setItem('rooms', JSON.stringify([{ roomId: payload.roomId, name: payload.name }]));
       }
     }
   }
