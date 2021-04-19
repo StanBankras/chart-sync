@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="room-info">
-      <p>{{ roomName }}</p>
+      <p>{{ roomName }} - {{ roomId }}</p>
       <button @click="exitRoom" class="btn">
         Exit room
       </button>
