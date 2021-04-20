@@ -2,7 +2,7 @@
 
 Chart sync helps traders work on their ideas together in real-time. Traders can create rooms where they can generate an invite link for others to join.
 
-## Table of contents
+## 📚 Table of contents
 * [Concept](https://github.com/StanBankras/chart-sync/tree/main#concept)
 * [Functionalities](https://github.com/StanBankras/chart-sync/tree/main#functionalities)
 * Parts of Binance API I use
@@ -15,7 +15,7 @@ Chart sync helps traders work on their ideas together in real-time. Traders can 
 * [Acknowledgements](https://github.com/StanBankras/chart-sync/tree/main#acknowledgements)
 * [License](https://github.com/StanBankras/chart-sync/tree/main#license)
 
-## Concept
+## ✨ Concept
 A lot of traders in the cryptocurrency space are sharing their trade ideas, and there are a lot of big crypto groups discussing ideas. Chart Sync will allow these traders to work on the same canvas to come to ideas and new insights together. 
 
 ### Start screen
@@ -40,7 +40,7 @@ Three different solutions for this screen:
 After looking at these three different approaches, I chose to continue with #3, because the charts are the most important and this way can use all the screen space.
 
 
-## Functionalities
+## 🚀 Functionalities
 
 ### MoSCoW method
 #### Must haves
@@ -62,7 +62,7 @@ After looking at these three different approaches, I chose to continue with #3, 
 * [x] See previous rooms you were in
 * [x] Switch timeframe
 * [ ] Export idea as image
-* [ ] Chart chart layout
+* [ ] Change chart layout
 
 
 #### Won't have this time
@@ -70,7 +70,7 @@ After looking at these three different approaches, I chose to continue with #3, 
 * [ ] Toggle seeing collaborators cursor
 * [ ] See online users in rooms you joined before
 
-## Binance websockets: trade streams
+## 🌐 Binance websockets: trade streams
 **[WS documentation](https://binance-docs.github.io/apidocs/spot/en/#websocket-market-streams)**
 
 **WS endpoint:** `wss://stream.binance.com:9443`
@@ -104,7 +104,7 @@ Out of this, I need:
 * q: quantity
 * p: price
 
-## Binance API: retreiving historical OHLCV data
+## ⚙️ Binance API: retreiving historical OHLCV data
 **[Market data documentation](https://binance-docs.github.io/apidocs/spot/en/#market-data-endpoints)**
 
 **API endpoint:** `https://api.binance.com`
@@ -163,17 +163,18 @@ The response will be:
 
 Out of this, I need to map the symbols array to get all pairs.
 
-## Data life cycle diagram
+## 🗃️ Data life cycle diagram
 ![data flow](https://github.com/StanBankras/chart-sync/blob/main/img/data-flow.png?raw=true)
 
 My idea is to connect the client with a websockets to the Binance API, to update the price charts, while connecting it to my Node server to sync actions with other collaborators.
 
-## Real-time events
+## ⏰ Real-time events
 
-## Stack
+## 🧰 Stack
 
-## Installation
+## 🛠️ Installation
 
-## Acknowledgements
+## ✅ Acknowledgements
 
 ## License
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
