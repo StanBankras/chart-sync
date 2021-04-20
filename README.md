@@ -2,7 +2,20 @@
 
 Chart sync helps traders work on their ideas together in real-time. Traders can create rooms where they can generate an invite link for others to join.
 
-## Concept & Sketches
+## Table of contents
+* [Concept](https://github.com/StanBankras/chart-sync/tree/main#concept)
+* [Functionalities](https://github.com/StanBankras/chart-sync/tree/main#functionalities)
+* Parts of Binance API I use
+  * [Websockets](https://github.com/StanBankras/chart-sync/tree/main#websockets)
+  * [API calls](https://github.com/StanBankras/chart-sync/tree/main#api-calls)
+* [Data life cycle diagram](https://github.com/StanBankras/chart-sync/tree/main#data-life-cycle-diagram)
+* [Real-time events](https://github.com/StanBankras/chart-sync/tree/main#real-time-events)
+* [Stack](https://github.com/StanBankras/chart-sync/tree/main#stack)
+* [Installation](https://github.com/StanBankras/chart-sync/tree/main#installation)
+* [Acknowledgements](https://github.com/StanBankras/chart-sync/tree/main#acknowledgements)
+* [License](https://github.com/StanBankras/chart-sync/tree/main#license)
+
+## Concept
 A lot of traders in the cryptocurrency space are sharing their trade ideas, and there are a lot of big crypto groups discussing ideas. Chart Sync will allow these traders to work on the same canvas to come to ideas and new insights together. 
 
 ### Start screen
@@ -28,20 +41,34 @@ After looking at these three different approaches, I chose to continue with #3, 
 
 
 ## Functionalities
-* [ ] Create room
-* [ ] Join existing room
-* [ ] Choose layout (single, dual & quad chart)
-* [x] Choose currencies to chart
-* [x] Draw on the charts
-* [ ] Host can lock someone's drawing ability
+
+### MoSCoW method
+#### Must haves
+* [x] Create room
+* [x] Add drawing tools on the chart
+* [x] Remove drawing tools from the chart
+* [x] Move drawing tools on the chart
 * [x] Charts update with live price data
-* [ ] Toggle seeing collaborators cursor
+* [x] Join existing room
+
+#### Should haves
+* [x] Choose layout (single, dual & quad chart)
+* [x] Choose other currencies to chart
+* [x] See users that are in your room
+* [x] Exit current room
+
+
+#### Could haves
+* [x] See previous rooms you were in
+* [x] Switch timeframe
 * [ ] Export idea as image
+* [ ] Chart chart layout
 
-## Data flow
-![data flow](https://github.com/StanBankras/chart-sync/blob/main/img/data-flow.png?raw=true)
 
-My idea is to connect the client with a websockets to the Binance API, to update the price charts, while connecting it to my Node server to sync actions with other collaborators.
+#### Won't have this time
+* [ ] Host can lock someone's drawing ability
+* [ ] Toggle seeing collaborators cursor
+* [ ] See online users in rooms you joined before
 
 ## Binance websockets: trade streams
 **[WS documentation](https://binance-docs.github.io/apidocs/spot/en/#websocket-market-streams)**
@@ -136,3 +163,17 @@ The response will be:
 
 Out of this, I need to map the symbols array to get all pairs.
 
+## Data life cycle diagram
+![data flow](https://github.com/StanBankras/chart-sync/blob/main/img/data-flow.png?raw=true)
+
+My idea is to connect the client with a websockets to the Binance API, to update the price charts, while connecting it to my Node server to sync actions with other collaborators.
+
+## Real-time events
+
+## Stack
+
+## Installation
+
+## Acknowledgements
+
+## License

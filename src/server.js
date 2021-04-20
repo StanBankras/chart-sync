@@ -184,5 +184,3 @@ app.post('/room/new', async (req, res) => {
 });
 
 http.listen(port, () => console.log(`listening on ${port}`));
-
-module.exports = { db };
