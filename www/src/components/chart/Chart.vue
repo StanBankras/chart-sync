@@ -64,7 +64,8 @@ export default {
       ticker: JSON.parse(JSON.stringify(this.initialticker)),
       socketId: this.$socket.id,
       movingItem: undefined,
-      checkMovingInterval: -1
+      checkMovingInterval: -1,
+      ready: false
     };
   },
   sockets: {
@@ -95,7 +96,7 @@ export default {
     this.height = this.container.height;
     this.width = this.container.width;
     window.addEventListener('resize', this.onResize);
-    this.checkMovingInterval = setInterval(() => this.checkMovingItem(), 3000);
+    this.checkMovingInterval = setInterval(() => this.checkMovingItem(), 500);
   },
   beforeDestroy() {
     clearInterval(this.checkMovingInterval);
@@ -123,6 +124,7 @@ export default {
           }
         });
         this.reinitPins();
+        this.ready = true;
       }
     },
     checkMovingItem() {
@@ -187,7 +189,7 @@ export default {
         changed.settings.$selected = false;
 
         this.movingItem = {
-          date: Date.now() + 2000,
+          date: Date.now() + 500,
           data: changed,
           roomId: this.roomId,
           ticker: this.ticker

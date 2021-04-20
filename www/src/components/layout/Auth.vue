@@ -11,7 +11,13 @@
       <template v-if="Object.keys(rooms).length > 0">
         <h2>Continue in a room</h2>
         <div class="rooms">
-          <div @click="joinRoom(key)" v-for="key in Object.keys(rooms)" :key="key">{{ rooms[key].name }}</div>
+          <div
+            class="room"
+            @click="joinRoom(key)"
+            v-for="key in Object.keys(rooms)"
+            :key="key">
+            <p class="name">{{ rooms[key].name }}</p>
+          </div>
         </div>
       </template>
     </div>
@@ -133,7 +139,7 @@ export default {
       });
     },
     joinRoom(roomId) {
-      this.$socket.emit('join', roomId);
+      this.$socket.emit('join', { roomId, username: this.userName });
     }
   }
 }
@@ -218,5 +224,17 @@ export default {
   h1 {
     margin-bottom: 1rem;
   }
+}
+
+.rooms {
+  .room {
+    padding: 0.5rem 1rem;
+    margin-bottom: 0.5rem;
+    background-color: #1f283f;
+  }
+}
+
+h2 {
+  margin-bottom: 1rem;
 }
 </style>

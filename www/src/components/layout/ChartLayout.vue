@@ -2,6 +2,11 @@
   <div class="wrapper">
     <div class="room-info">
       <p>{{ roomName }} - {{ roomId }}</p>
+      <div class="users">
+        <div class="user" v-for="user in usersInRoom" :key="user.id">
+          {{ user.username }}
+        </div>
+      </div>
       <button @click="exitRoom" class="btn">
         Exit room
       </button>
@@ -34,13 +39,19 @@ export default {
     },
     roomName() {
       return this.rooms[this.roomId].name;
+    },
+    usersInRoom() {
+      return this.rooms[this.roomId].users || [];
     }
   },
   methods: {
     exitRoom() {
-      this.$store.commit('SET_ROOM_ID', undefined);
       this.$socket.emit('leave', this.roomId);
+      this.$store.commit('SET_ROOM_ID', undefined);
     }
+  },
+  beforeDestroy() {
+    this.$socket.emit('leave', this.roomId);
   }
 };
 </script>

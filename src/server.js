@@ -35,7 +35,11 @@ let rooms = {};
   data.docs.forEach(doc => rooms[doc.id] = doc.data());
 })();
 
-const events = ['add_item', 'move_item', 'del_item', 'change_ticker'];
+async function saveRoom(documentId, object) {
+  const copy = JSON.parse(JSON.stringify(object));
+  delete copy.users;
+  await db.collection("rooms").doc(documentId).update(copy);
+}
 
 io.on('connection', socket => {
   socket.on('change_ticker', async data => {
@@ -48,7 +52,8 @@ io.on('connection', socket => {
     room.activeTickers[oldIndex] = data.new;
 
     if(!room.tickers[data.new]) room.tickers[data.new] = [];
-    await db.collection("rooms").doc(data.roomId).update(room);
+    
+    await saveRoom(data.roomId, room);
   });
 
   socket.on('del_item', async data => {
@@ -60,8 +65,9 @@ io.on('connection', socket => {
     const ticker = data.ticker;
     const tool = data.data;
 
-    room.tickers[ticker] = room.tickers[ticker].filter(t => t.settings['$uuid'] !== tool.settings['$uuid']);
-    await db.collection("rooms").doc(data.roomId).update(room);
+    room.tickers[ticker] = room.tickers[ticker].filter(t => t.id !== tool.id || !t.settings.p1 || !t.settings.p2);
+    
+    await saveRoom(data.roomId, room);
   });
 
   
@@ -77,9 +83,11 @@ io.on('connection', socket => {
     const tool = data.data;
 
     const index = room.tickers[data.ticker].findIndex(t => t.id === tool.id);
-    if(!index) return;
+    if(index === '-1' || index === -1) return;
+
     room.tickers[data.ticker][index] = tool;
-    await db.collection("rooms").doc(data.roomId).update(room);
+    
+    await saveRoom(data.roomId, room);
   });
 
   socket.on('add_item', async data => {
@@ -90,22 +98,48 @@ io.on('connection', socket => {
 
     const ticker = data.ticker;
     const tool = data.data;
+    tool.date = Date.now();
 
+    if(room.tickers[ticker].find(t => t.id === tool.id)) return;
     room.tickers[ticker] = [...room.tickers[ticker], tool];
-    await db.collection("rooms").doc(data.roomId).update(room);
+
+    await saveRoom(data.roomId, room);
   });
 
   // Users joining a room: check if id exists
-  socket.on('join', roomId => {
+  socket.on('join', ({ roomId, username }) => {
     if(!roomId) return io.to(socket.id).emit('joined', { roomId: 'NO_ID' });
     const room = rooms[roomId];
     if(!room) return io.to(socket.id).emit('joined', { roomId: 'NO_ROOM_WITH_ID' });
 
     socket.join(roomId);
+    if(room.users) {
+      room.users = room.users.filter(u => u.username !== username);
+      room.users.push({ id: socket.id, username });
+      io.to(roomId).emit('new_user', { roomId, user: { id: socket.id, username } });
+    } else {
+      room.users = [{ id: socket.id, username }];
+      io.to(roomId).emit('new_user', { roomId, user: { id: socket.id, username } });
+    }
     io.to(socket.id).emit('joined', room);
   });
 
-  socket.on('leave', roomId => socket.leave(roomId));
+  socket.on('leave', roomId => {
+    socket.leave(roomId);
+
+    const room = rooms[roomId];
+    if(room && room.users) {
+      room.users = room.users.filter(u => u.id !== socket.id);
+      io.to(roomId).emit('remove_user', { roomId, id: socket.id });
+    }
+  });
+
+  socket.on('disconnect', () => {
+    const roomId = Object.keys(rooms).find(key => rooms[key].users ? rooms[key].users.find(u => u.id === socket.id) : false);
+    if(roomId) {
+      io.to(roomId).emit('remove_user', { roomId, id: socket.id });
+    }
+  });
 });
 
 app.get('/klines/:pair/:timeframe', (req, res) => {
@@ -116,6 +150,11 @@ app.get('/klines/:pair/:timeframe', (req, res) => {
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'www', 'dist', 'index.html'));
+});
+
+app.get('/users/:roomId', (req, res) => {
+  const room = rooms[req.params.roomId];
+  res.json({ users: room.users });
 });
 
 app.post('/room/new', async (req, res) => {
@@ -145,3 +184,5 @@ app.post('/room/new', async (req, res) => {
 });
 
 http.listen(port, () => console.log(`listening on ${port}`));
+
+module.exports = { db };

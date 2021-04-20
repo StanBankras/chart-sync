@@ -48,7 +48,7 @@ const store = new Vuex.Store({
     },
     SET_ROOMS(state, payload) {
       payload.forEach(room => state.rooms[room.roomId] = room);
-      console.log(state.rooms);
+      state.rooms = JSON.parse(JSON.stringify(state.rooms));
     }
   },
   actions: {
@@ -105,8 +105,7 @@ const store = new Vuex.Store({
     loadRooms({ commit }) {
       let rooms = localStorage.getItem('rooms');
       if(rooms) {
-        rooms = JSON.parse(rooms);
-        commit('SET_ROOMS', rooms);
+        commit('SET_ROOMS', JSON.parse(rooms));
       }
     },
     setRoomId({ commit }, payload) {
@@ -117,12 +116,35 @@ const store = new Vuex.Store({
       let rooms = localStorage.getItem('rooms');
       if(rooms) {
         rooms = JSON.parse(rooms);
-        if(rooms[payload.roomId]) return;
+        if(rooms.find(r => r.roomId === payload.roomId)) return;
         rooms.push({ roomId: payload.roomId, name: payload.name });
         localStorage.setItem('rooms', JSON.stringify(rooms));
       } else {
         localStorage.setItem('rooms', JSON.stringify([{ roomId: payload.roomId, name: payload.name }]));
       }
+    },
+    SOCKET_new_user({ commit, state }, payload) {
+      const room = state.rooms[payload.roomId];
+      if(!room) return;
+
+      if(!room.users) {
+        room.users = [payload.user];
+      } else {
+        room.users.push(payload.user);
+      }
+
+      commit('SET_ROOMS', [room]);
+    },
+    SOCKET_remove_user({ commit, state }, payload) {
+      console.log(payload);
+      const room = state.rooms[payload.roomId];
+      if(!room) return;
+
+      if(room.users) {
+        room.users = room.users.filter(u => u.id !== payload.id);
+      }
+
+      commit('SET_ROOMS', [room]);
     }
   }
 });

@@ -11,7 +11,11 @@ Vue.config.productionTip = false
 
 Vue.use(new VueSocketIO({
     debug: false,
-    connection: SocketIO(process.env.VUE_APP_API_HOSTNAME)
+    connection: SocketIO(process.env.VUE_APP_API_HOSTNAME),
+    vuex: {
+        store,
+        actionPrefix: 'SOCKET_'
+    },
   })
 );
 
