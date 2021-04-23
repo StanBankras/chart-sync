@@ -66,7 +66,7 @@ After looking at these three different approaches, I chose to continue with #3, 
 * [x] See previous rooms you were in
 * [x] Switch timeframe
 * [ ] Export idea as image
-* [ ] Change chart layout
+* [ ] Change chart layout (add or remove a chart in the room)
 
 
 #### Won't have this time
