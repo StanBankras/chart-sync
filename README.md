@@ -2,6 +2,10 @@
 
 Chart sync helps traders work on their ideas together in real-time. Traders can create rooms where they can generate an invite link for others to join.
 
+![join room](https://github.com/StanBankras/chart-sync/blob/main/img/join-room.png?raw=true)
+
+![charting](https://github.com/StanBankras/chart-sync/blob/main/img/trading-together.png?raw=true)
+
 ## 📚 Table of contents
 * [Concept](https://github.com/StanBankras/chart-sync/tree/main#concept)
 * [Functionalities](https://github.com/StanBankras/chart-sync/tree/main#functionalities)
@@ -168,13 +172,37 @@ Out of this, I need to map the symbols array to get all pairs.
 
 My idea is to connect the client with a websockets to the Binance API, to update the price charts, while connecting it to my Node server to sync actions with other collaborators.
 
+*This diagram will become more detailed (per socket event) soon.*
+
 ## ⏰ Real-time events
+* **Joining a room** - Users currently in a room receive the message and see the new users pop up
+* **Leaving a room** - Whether a user exits the room via click of a button, or clicks away their browser tab, other users will know they are gone
+* **Drawing a with drawing tools** - Users are updated in real-time of what other people are drawing on the chart(s)
+* **Editing a drawing tool** - Drawings that are edited are also updated to other users in the room
+* **Deleting a drawing tool** - When someone deletes a drawing tool, it is deleted for everyone
+* **Trading data** - All charts are updated with the real-time tradestream of Binance
+
+*Note: since data is saved to a database, there is a 0.5s interval for possible saves to the database when a user is moving a tool, since the move event fire tens of times per second.*
 
 ## 🧰 Stack
+### Frontend
+* **VueJS framework** - Frontend framework that provides easy to use data driven rendering
+* **vue-socket.io** - Very nice integration for sockets in Vue components and Vue store
+* **trading-vue-js** - Charting package like [tradingview.com](https://tradingview.com), but completely free to use and very 'hackable'
+* **haikunator** - Generating random names for my rooms
+* **uuid** - Generating random temporary IDs for users
+
+### Backend
+* **Express** - Manage serving files to frontend
+* **socket.io** - Server side websocket implementation
+* **firebase** - Database software by Google that works well with live data
+* **babel** - Transpile code from ES6 to ES5
 
 ## 🛠️ Installation
+To do
 
 ## ✅ Acknowledgements
+To do
 
 ## License
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
