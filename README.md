@@ -7,17 +7,17 @@ Chart sync helps traders work on their ideas together in real-time. Traders can 
 ![charting](https://github.com/StanBankras/chart-sync/blob/main/img/trading-together.png?raw=true)
 
 ## 📚 Table of contents
-* [Concept](https://github.com/StanBankras/chart-sync/tree/main#concept)
-* [Functionalities](https://github.com/StanBankras/chart-sync/tree/main#functionalities)
+* [Concept](https://github.com/StanBankras/chart-sync/tree/main#-concept)
+* [Functionalities](https://github.com/StanBankras/chart-sync/tree/main#-functionalities)
 * Parts of Binance API I use
-  * [Websockets](https://github.com/StanBankras/chart-sync/tree/main#websockets)
-  * [API calls](https://github.com/StanBankras/chart-sync/tree/main#api-calls)
+  * [Websockets](https://github.com/StanBankras/chart-sync/tree/main#-websockets)
+  * [API calls](https://github.com/StanBankras/chart-sync/tree/main#-api-calls)
 * [Data life cycle diagram](https://github.com/StanBankras/chart-sync/tree/main#data-life-cycle-diagram)
-* [Real-time events](https://github.com/StanBankras/chart-sync/tree/main#real-time-events)
-* [Stack](https://github.com/StanBankras/chart-sync/tree/main#stack)
+* [Real-time events](https://github.com/StanBankras/chart-sync/tree/main#-real-time-events)
+* [Stack](https://github.com/StanBankras/chart-sync/tree/main#-stack)
 * [Installation](https://github.com/StanBankras/chart-sync/tree/main#installation)
-* [Acknowledgements](https://github.com/StanBankras/chart-sync/tree/main#acknowledgements)
-* [License](https://github.com/StanBankras/chart-sync/tree/main#license)
+* [Acknowledgements](https://github.com/StanBankras/chart-sync/tree/main#-acknowledgements)
+* [License](https://github.com/StanBankras/chart-sync/tree/main#-license)
 
 ## ✨ Concept
 A lot of traders in the cryptocurrency space are sharing their trade ideas, and there are a lot of big crypto groups discussing ideas. Chart Sync will allow these traders to work on the same canvas to come to ideas and new insights together. 
