@@ -14,7 +14,6 @@
   },
   "scripts": {
     "dev": "nodemon --exec babel-node server.js",
-    "prestart": "babel -d ./heroku ./server -s",
     "start": "node ./heroku/server.js"
   },
   "devDependencies": {
