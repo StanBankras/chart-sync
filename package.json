@@ -6,7 +6,8 @@
   "repository": "https://github.com/StanBankras/real-time-web-2021.git",
   "author": "Stan Bankras <stanbankras@gmail.com>",
   "scripts": {
-    "start": "cd ./src && yarn install && rm -rf ./dist && yarn start",
+    "heroku-prebuild": "cd ./src && yarn install && yarn build",
+    "start": "cd ./src && yarn start",
     "heroku-postbuild": "cd ./www && yarn install && yarn run build"
   },
   "license": "MIT"
