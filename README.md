@@ -73,6 +73,7 @@ After looking at these three different approaches, I chose to continue with #3, 
 * [ ] Host can lock someone's drawing ability
 * [ ] Toggle seeing collaborators cursor
 * [ ] See online users in rooms you joined before
+* [ ] Disallow same usernames
 
 ## 🌐 Binance websockets: trade streams
 **[WS documentation](https://binance-docs.github.io/apidocs/spot/en/#websocket-market-streams)**

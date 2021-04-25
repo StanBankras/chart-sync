@@ -17,6 +17,7 @@
             v-for="key in Object.keys(rooms)"
             :key="key">
             <p class="name">{{ rooms[key].name }}</p>
+            <p>></p>
           </div>
         </div>
       </template>
@@ -231,6 +232,12 @@ export default {
     padding: 0.5rem 1rem;
     margin-bottom: 0.5rem;
     background-color: #1f283f;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    &:hover {
+      background-color: #2a3655;
+    }
   }
 }
 
