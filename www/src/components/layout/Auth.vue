@@ -4,6 +4,7 @@
       <h2>Join an existing room</h2>
       <label for="roomId">Room code:</label>
       <input type="text" v-model="roomCode">
+      <p class="error" v-if="noRoom">No room with this code</p>
       <button
         :disabled="!roomCode || roomCode === ''"
         @click="joinRoom(roomCode)"
@@ -96,8 +97,8 @@ export default {
   sockets: {
     joined(payload) {
       const id = payload.roomId;
-      if(id === 'NO_ID') return console.log('no id');
-      if(id === 'NO_ROOM_WITH_ID') return console.log('no room with id');
+      if(id === 'NO_ID') return this.noRoom = true;
+      if(id === 'NO_ROOM_WITH_ID') return this.noRoom = true;
       this.$store.dispatch('setRoomId', payload).then(() => {
         if(this.$route.path === '/charts') return;
         this.$router.push('/charts');
@@ -107,7 +108,8 @@ export default {
   data() {
     return {
       nickname: undefined,
-      roomCode: undefined
+      roomCode: undefined,
+      noRoom: false
     }
   },
   methods: {
@@ -242,6 +244,11 @@ export default {
 }
 
 h2 {
+  margin-bottom: 1rem;
+}
+
+.error {
+  color: red;
   margin-bottom: 1rem;
 }
 </style>
