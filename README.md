@@ -222,7 +222,11 @@ FIREBASE_PROJECT_ID=<FIREBASE_PROJECT_ID>
 Lastly, in Firestore, create a collection named: `rooms`.
 
 ## ✅ Acknowledgements
-To do
+* [Tradingvue library](https://github.com/tvjsx/trading-vue-js)
+* [Tradingvue XP](https://github.com/tvjsx/tvjs-xp)
+* [Babel to transpile code](https://babeljs.io/docs/en/configuration)
+* [Getting started with Firestore](https://firebase.google.com/docs)
+* [Vue socket io](https://www.npmjs.com/package/vue-socket.io)
 
 ## License
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
