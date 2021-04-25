@@ -173,8 +173,6 @@ Out of this, I need to map the symbols array to get all pairs.
 
 My idea is to connect the client with a websockets to the Binance API, to update the price charts, while connecting it to my Node server to sync actions with other collaborators.
 
-*This diagram will become more detailed (per socket event) soon.*
-
 ## ⏰ Real-time events
 * **Joining a room** - Users currently in a room receive the message and see the new users pop up
 * **Leaving a room** - Whether a user exits the room via click of a button, or clicks away their browser tab, other users will know they are gone
