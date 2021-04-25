@@ -219,7 +219,7 @@ FIREBASE_AUTH_DOMAIN=http://localhost:8080
 FIREBASE_PROJECT_ID=<FIREBASE_PROJECT_ID>
 ```
 
-Lastly, in Firestore, create a collection named: `rooms`.
+Finally, in Firestore, create a collection named: `rooms`.
 
 ## ✅ Acknowledgements
 * [Tradingvue library](https://github.com/tvjsx/trading-vue-js)
