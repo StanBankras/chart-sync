@@ -162,46 +162,46 @@ export default {
       const onchart = JSON.parse(JSON.stringify(this.chart.data.onchart));
 
       if(onchart.length <= 0) return;
+      this.prevOnchart = onchart;
 
+      // Look for changes in the onchart array (hacky, but the only way to detect)
       if(!prev || prev.length === 0) {
         const data = onchart[0];
         data.settings.p1 = e.p1;
         data.settings.p2 = e.p1;
-        data.settings.$state = 'finished';
-        data.settings.$selected = false;
-        this.emitDrawChange({
-          type: 'add_item',
-          data,
-          ticker: this.ticker
-        });
+        this.addItem(data);
       } else if(prev.length < onchart.length) {
-        const data = onchart[onchart.length - 1];
-        data.settings.$state = 'finished';
-        data.settings.$selected = false;
-        this.emitDrawChange({
-          type: 'add_item',
-          data,
-          ticker: this.ticker
-        });
+        this.addItem(onchart[onchart.length - 1]);
       } else if(JSON.stringify(prev) !== JSON.stringify(onchart)) {
         const changed = prev.find((item, i) => JSON.stringify(onchart[i]) !== JSON.stringify(item));
-        changed.settings.$state = 'finished';
-        changed.settings.$selected = false;
-
-        this.movingItem = {
-          date: Date.now() + 500,
-          data: changed,
-          roomId: this.roomId,
-          ticker: this.ticker
-        };
-
-        this.emitDrawChange({
-          type: 'move_item',
-          data: changed,
-          ticker: this.ticker
-        });
+        this.moveItem(changed);
       }
-      this.prevOnchart = onchart;
+    },
+    addItem(data) {
+      data.settings.$state = 'finished';
+      data.settings.$selected = false;
+      this.emitDrawChange({
+        type: 'add_item',
+        data,
+        ticker: this.ticker
+      });
+    },
+    moveItem(data) {
+      data.settings.$state = 'finished';
+      data.settings.$selected = false;
+
+      this.movingItem = {
+        date: Date.now() + 500,
+        data,
+        roomId: this.roomId,
+        ticker: this.ticker
+      };
+
+      this.emitDrawChange({
+        type: 'move_item',
+        data,
+        ticker: this.ticker
+      });
     },
     emitDrawChange(change) {
       this.$socket.emit(change.type, {
