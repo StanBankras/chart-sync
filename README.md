@@ -200,7 +200,26 @@ My idea is to connect the client with a websockets to the Binance API, to update
 * **babel** - Transpile code from ES6 to ES5
 
 ## 🛠️ Installation
-To do
+#### Install packages
+
+`cd ./src && yarn install`
+
+`cd ./www && yarn install`
+
+#### Environment
+In `./www`, add a `.env.local` file with:
+
+`VUE_APP_API_HOSTNAME=http://localhost:3000`
+
+In `./src`, add a `.env` file with:
+
+```
+FIREBASE_API_KEY=<FIREBASE_API_KEY>
+FIREBASE_AUTH_DOMAIN=http://localhost:8080
+FIREBASE_PROJECT_ID=<FIREBASE_PROJECT_ID>
+```
+
+Lastly, in Firestore, create a collection named: `rooms`.
 
 ## ✅ Acknowledgements
 To do
